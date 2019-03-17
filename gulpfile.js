@@ -1,18 +1,43 @@
-var gulp = require('gulp'),
-watch = require('gulp-watch');
+const { src, dest, task, watch, parallel } = require("gulp");
 
-gulp.task('default', function() {
-    console.log("Hooray - you created a Gulp task.");
-});
+//CSS related plugins
+var postcss        = require('gulp-postcss');
+var autoprefixer   = require('autoprefixer');
+var cssvars        = require('postcss-simple-vars');
+var nested         = require('postcss-nested');
 
-gulp.task('html',  function() {
+
+// project related variables
+var styleWatch   = ('./app/assets/styles/styles.css');
+var htmlWatch    = ('./app/index.html');
+
+var cssSRC       = ('./app/assets/styles/styles.css');
+var cssURL       = ('./app/temp/styles');
+
+
+function html(done) {
+
     console.log("Imagine something useful being done to your HTML here.");
-});
+    done();
+};
 
-gulp.task('watch', function() {
+function css(done) {
 
-    watch('./app/index.html', function() {
-        gulp.start('html');
-    });
-    
-});
+    src(cssSRC)
+    .pipe(postcss([cssvars(), nested(), autoprefixer()]))
+    .pipe(dest(cssURL));
+    done();
+};
+
+function watch_files(done) {
+
+    watch(htmlWatch, html);
+    watch(styleWatch, css);
+    done();
+};
+
+task("css", css);
+task("html", html);
+
+task("default", parallel(css, html));
+task("watch", watch_files);
