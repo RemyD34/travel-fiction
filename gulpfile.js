@@ -5,7 +5,8 @@ var postcss = require("gulp-postcss"),
   autoprefixer = require("autoprefixer"),
   cssvars = require("postcss-simple-vars"),
   nested = require("postcss-nested"),
-  cssImport = require("postcss-import");
+  cssImport = require("postcss-import"),
+  mixins = require("postcss-mixins");
 
 // Browser related plugins
 var browserSync = require("browser-sync").create();
@@ -39,7 +40,11 @@ function html(done) {
 
 function css(done) {
   src(cssSRC)
-    .pipe(postcss([cssImport(), cssvars(), nested(), autoprefixer()]))
+    .pipe(postcss([cssImport(), mixins(), cssvars(), nested(), autoprefixer()]))
+    .on("error", function(errorInfo) {
+      console.log(errorInfo.toString());
+      this.emit("end");
+    })
     .pipe(dest(cssURL));
   done();
 }
