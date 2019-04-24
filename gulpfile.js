@@ -6,7 +6,10 @@ var postcss = require("gulp-postcss"),
   cssvars = require("postcss-simple-vars"),
   nested = require("postcss-nested"),
   cssImport = require("postcss-import"),
-  mixins = require("postcss-mixins");
+  mixins = require("postcss-mixins"),
+  svgSprite = require("gulp-svg-sprite"),
+  rename = require("gulp-rename"),
+  del = require("del");
 
 // Browser related plugins
 var browserSync = require("browser-sync").create();
@@ -15,15 +18,37 @@ var browserSync = require("browser-sync").create();
 var styleWatch = "./app/assets/styles/**/*.scss";
 var htmlWatch = "./app/index.html";
 
-var cssSRC = "./app/assets/styles/styles.css";
+var cssSRC = "./app/assets/styles/styles.scss";
 var cssURL = "./app/temp/styles";
+
+//Sprite related variables
+var iconSRC = "./app/assets/images/icons/**/*.svg";
+var iconURL = "./app/temp/sprite/";
+var graphicSRC = "./app/temp/sprite/css/**/*.svg";
+var graphicURL = "./app/assets/images/sprites";
+var copySRC = "./app/temp/sprite/css/*.css";
+var copyURL = "./app/assets/styles/modules";
+// var moduleURL = "./app/assets/styles/modules/_sprite.scss";
+
+var config = {
+  mode: {
+    css: {
+      sprite: "sprite.svg",
+      render: {
+        css: {
+          template: "./gulp/templates/sprite.scss"
+        }
+      }
+    }
+  }
+};
 
 // Tasks
 function browser_sync() {
   browserSync.init({
     notify: false,
     server: {
-      baseDir: "./app/"
+      baseDir: "app"
     }
   });
 }
@@ -40,12 +65,44 @@ function html(done) {
 
 function css(done) {
   src(cssSRC)
+    .pipe(rename("styles.css"))
     .pipe(postcss([cssImport(), mixins(), cssvars(), nested(), autoprefixer()]))
     .on("error", function(errorInfo) {
       console.log(errorInfo.toString());
       this.emit("end");
     })
     .pipe(dest(cssURL));
+  done();
+}
+
+// Delete outdated sprite files before creating new ones.
+function beginClean(done) {
+  del([iconURL, graphicURL]);
+  done();
+}
+
+// Create a sprite file.
+function createSprite() {
+  return src(iconSRC)
+    .pipe(svgSprite(config))
+    .pipe(dest(iconURL));
+}
+
+// Copy the sprite file to the images/sprites map to organize.
+function copySpriteGraphic() {
+  return src(graphicSRC).pipe(dest(graphicURL));
+}
+
+// Rename and copy the css sprite file to the modules map.
+function copySpriteCSS() {
+  return src(copySRC)
+    .pipe(rename("_sprite.scss"))
+    .pipe(dest(copyURL));
+}
+
+// Delete unused sprite files.
+function endClean(done) {
+  del([iconURL]);
   done();
 }
 
@@ -60,3 +117,4 @@ task("html", html);
 
 task("default", parallel(css, html));
 task("watch", parallel(browser_sync, watch_files));
+task("icons", series(beginClean, createSprite, copySpriteGraphic, copySpriteCSS, endClean));
