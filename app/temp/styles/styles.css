@@ -999,7 +999,12 @@ a {
   padding: 10px 0;
   width: 100%;
   z-index: 2;
+  transition: background-color 0.3s ease-out;
 }
+
+.site-header--is-expanded {
+    background-color: rgba(47,85,114, 0.55);
+  }
 
 @media (min-width: 800px) {
 
@@ -1008,8 +1013,11 @@ a {
 }
   }
 
+@media (min-width: 800px) {
+
 .site-header__btn-container {
-    float: right;
+      float: right
+  }
   }
 
 .site-header__logo {
@@ -1042,6 +1050,7 @@ a {
     height: 20px;
     background-color: #fff;
     position: absolute;
+    z-index: 10;
     top: 10px;
     right: 10px;
   }
@@ -1054,22 +1063,50 @@ a {
   }
 
 .site-header__menu-content {
-    display: none;
+    opacity: 0;
+    transition: all 0.3s ease-out;
+    -webkit-transform: scale(1.2);
+            transform: scale(1.2);
+    position: relative;
+    z-index: -10;
+    padding-top: 90px;
+    text-align: center;
   }
 
 @media (min-width: 800px) {
 
 .site-header__menu-content {
-      display: block
+      -webkit-transform: scale(1);
+              transform: scale(1);
+      opacity: 1;
+      z-index: 1;
+      padding-top: 0
   }
   }
 
 .site-header__menu-content--is-visible {
-      display: block;
+      -webkit-transform: scale(1);
+              transform: scale(1);
+      opacity: 1;
+      z-index: 1;
     }
 
+.primary-nav {
+  padding-top: 10px;
+}
+
+@media (min-width: 800px) {
+
+.primary-nav {
+    padding-top: 0px
+}
+  }
+
+@media (min-width: 800px) {
+
 .primary-nav--pull-right {
-    float: right;
+      float: right
+  }
   }
 
 .primary-nav ul {
@@ -1085,8 +1122,28 @@ a {
 
 .primary-nav li {
     list-style: none;
-    float: left;
-    padding-right: 20px;
+    display: inline-block;
+    padding-right: 7px;
+  }
+
+@media (min-width: 800px) {
+
+.primary-nav li {
+      padding-right: 20px;
+      display: block;
+      float: left
+  }
+  }
+
+.primary-nav li:last-child {
+    padding-right: 0px;
+  }
+
+@media (min-width: 800px) {
+
+.primary-nav li:last-child {
+      padding-right: 20px
+  }
   }
 
 .primary-nav a {
@@ -1094,5 +1151,16 @@ a {
     text-decoration: none;
     display: block;
     font-weight: 300;
-    padding: 12px 0;
+    padding: 5px 8px;
+    font-size: 0.8rem;
+    background-color: rgba(47,85,114, 0.3);
+  }
+
+@media (min-width: 800px) {
+
+.primary-nav a {
+      padding: 12px 0;
+      font-size: 1rem;
+      background-color: transparent
+  }
   }
