@@ -7,6 +7,7 @@ module.exports = {
     path: path.resolve(__dirname, "./app/temp/scripts"),
     filename: "App.js"
   },
+  // Adding the babel loader.
   module: {
     rules: [
       {

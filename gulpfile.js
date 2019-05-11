@@ -1,3 +1,4 @@
+// Gulp 4
 const { src, dest, task, watch, parallel, series } = require("gulp");
 
 // CSS related plugins
@@ -12,7 +13,7 @@ var postcss = require("gulp-postcss"),
   del = require("del"),
   hexrgba = require("postcss-hexrgba");
 
-// JS related plugins
+// JS related plugins using Webpack.
 var webpack = require("webpack");
 var configURL = "./webpack.config.js";
 
