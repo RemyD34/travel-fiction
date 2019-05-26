@@ -3,6 +3,10 @@
 
   @mixin atMedium {
     padding: 4.5rem 0;
+
+    .is-current-link & {
+      color: $mainOrange;
+    }
   }
 
   &--no-b-padding-until-medium {
