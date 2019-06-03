@@ -568,13 +568,12 @@ a {
   }
 
 @media (min-width: 1010px) {
-
-.page-section--testimonials {
-      background-image: url("/assets/images/testimonials-bg.jpg");
-      background-position: center top;
-      background-size: cover;
-      background-repeat: no-repeat
-  }
+      .page-section--testimonials.lazyloaded {
+        background-image: url("/assets/images/testimonials-bg.jpg");
+        background-position: center top;
+        background-size: cover;
+        background-repeat: no-repeat;
+      }
   }
 
 .headline {

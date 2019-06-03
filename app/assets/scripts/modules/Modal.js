@@ -15,7 +15,7 @@ class Modal {
     // Clicking the X close modal button.
     this.closeModalButton.click(this.closeModal.bind(this));
 
-    // Pushes the escape key.
+    // Pushes the escape key = code 27.
     $(document).keyup(this.keyPressHandler.bind(this));
   }
 

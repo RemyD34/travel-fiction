@@ -14,6 +14,7 @@
       content="Your clarity. One trip away. We create soul restoring journeys that inspire you to be you."
     />
     <link rel="stylesheet" href="temp/styles/styles.css" />
+    <script src="/temp/scripts/vendor.js"></script>
   </head>
   <body>
     <header class="site-header">
@@ -89,8 +90,9 @@
         <div class="wrapper wrapper--medium wrapper--b-margin">
           <!-- responsive image, resolution -->
           <img
+            class="lazyload"
             sizes="(min-width: 970px) 976px, 100vw"
-            srcset="
+            data-srcset="
               assets/images/first-trip-low-res.jpg  565w,
               assets/images/first-trip.jpg          976w,
               assets/images/first-trip-hi-dpi.jpg  1952w
@@ -105,19 +107,20 @@
             <picture>
               <source
                 sizes="404px"
-                srcset="assets/images/our-start.jpg 404w, assets/images/our-start-hi-dpi.jpg 808w"
+                data-srcset="assets/images/our-start.jpg 404w, assets/images/our-start-hi-dpi.jpg 808w"
                 media="(min-width: 1020px)"
               />
               <source
                 sizes="320px"
-                srcset="
+                data-srcset="
                   assets/images/our-start-portrait.jpg        382w,
                   assets/images/our-start-portrait-hi-dpi.jpg 764w
                 "
                 media="(min-width: 800px)"
               />
               <img
-                srcset="
+                class="lazyload"
+                data-srcset="
                   assets/images/our-start-landscape.jpg         800w,
                   assets/images/our-start-landscape-hi-dpi.jpg 1600w
                 "
@@ -209,7 +212,7 @@
 
     <div
       id="testimonials"
-      class="page-section page-section--no-b-padding-until-large page-section--testimonials"
+      class="page-section page-section--no-b-padding-until-large page-section--testimonials lazyload"
       data-matching-link="#testimonials-link"
     >
       <div class="wrapper wrapper--no-padding-until-large">
@@ -225,8 +228,9 @@
             <div class="testimonial">
               <div class="testimonial__photo">
                 <img
+                  class="lazyload"
                   sizes="160px"
-                  srcset="
+                  data-srcset="
                     assets/images/testimonial-jane.jpg        160w,
                     assets/images/testimonial-jane-hi-dpi.jpg 320w
                   "
@@ -247,8 +251,9 @@
             <div class="testimonial">
               <div class="testimonial__photo">
                 <img
+                  class="lazyload"
                   sizes="160px"
-                  srcset="
+                  data-srcset="
                     assets/images/testimonial-john.jpg        160w,
                     assets/images/testimonial-john-hi-dpi.jpg 320w
                   "
@@ -268,8 +273,9 @@
             <div class="testimonial testimonial--last">
               <div class="testimonial__photo">
                 <img
+                  class="lazyload"
                   sizes="160px"
-                  srcset="
+                  data-srcset="
                     assets/images/testimonial-cat.jpg        160w,
                     assets/images/testimonial-cat-hi-dpi.jpg 320w
                   "

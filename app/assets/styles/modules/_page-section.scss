@@ -34,10 +34,12 @@
     background-color: #e0e6ef;
 
     @mixin atLarge {
-      background-image: url("/assets/images/testimonials-bg.jpg");
-      background-position: center top;
-      background-size: cover;
-      background-repeat: no-repeat;
+      &.lazyloaded {
+        background-image: url("/assets/images/testimonials-bg.jpg");
+        background-position: center top;
+        background-size: cover;
+        background-repeat: no-repeat;
+      }
     }
   }
 }
