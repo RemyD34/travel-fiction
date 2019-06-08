@@ -8,10 +8,13 @@ var postcss = require("gulp-postcss"),
   nested = require("postcss-nested"),
   cssImport = require("postcss-import"),
   mixins = require("postcss-mixins"),
-  svgSprite = require("gulp-svg-sprite"),
   rename = require("gulp-rename"),
+  hexrgba = require("postcss-hexrgba"),
+  modernizr = require("gulp-modernizr"),
+  // Sprite related plugins.
   del = require("del"),
-  hexrgba = require("postcss-hexrgba");
+  svgSprite = require("gulp-svg-sprite"),
+  svg2png = require("gulp-svg2png");
 
 // JS related plugins using Webpack.
 var webpack = require("webpack");
@@ -28,13 +31,20 @@ var scriptWatch = "./app/assets/scripts/**/*.js";
 var cssSRC = "./app/assets/styles/styles.scss";
 var cssURL = "./app/temp/styles";
 
-//Sprite related variables
+// Sprite related variables
 var iconSRC = "./app/assets/images/icons/**/*.svg";
 var iconURL = "./app/temp/sprite/";
-var graphicSRC = "./app/temp/sprite/css/**/*.svg";
+var pngSRC = "./app/temp/sprite/css/*.svg";
+var pngURL = "./app/temp/sprite/css";
+var graphicSRC = "./app/temp/sprite/css/**/*.{svg,png}";
 var graphicURL = "./app/assets/images/sprites";
 var copySRC = "./app/temp/sprite/css/*.css";
 var copyURL = "./app/assets/styles/modules";
+
+// Modernizr related variables
+var modernizrCssSRC = "./app/assets/styles/**/*.scss";
+var modernizrJsSRC = "./app/assets/scripts/**/*.js";
+var modernizrURL = "./app/temp/scripts/";
 
 var config = {
   mode: {
@@ -75,7 +85,7 @@ function css(done) {
   src(cssSRC)
     .pipe(rename("styles.css"))
     .pipe(postcss([cssImport(), mixins(), cssvars(), nested(), hexrgba(), autoprefixer()]))
-    .on("error", function(errorInfo) {
+    .on("error", function (errorInfo) {
       console.log(errorInfo.toString());
       this.emit("end");
     })
@@ -86,13 +96,13 @@ function css(done) {
 // JS task.
 // Automate bundling JS files into one file with Webpack 4.30.0
 function scripts(done) {
-  webpack(require(configURL), function(err, stats) {
+  webpack(require(configURL), function (err, stats) {
     if (err) {
       console.log(err.toString());
     }
     console.log(stats.toString());
-    done();
   });
+  done();
 }
 
 // Begin compilling multiple icon files into one sprite file.
@@ -109,7 +119,14 @@ function createSprite() {
     .pipe(dest(iconURL));
 }
 
-// Copy the sprite file to the images/sprites map to organize.
+// Copy the sprite .svg file to a .png file.
+function createPngCopy() {
+  return src(pngSRC)
+    .pipe(svg2png())
+    .pipe(dest(pngURL));
+}
+
+// Copy the sprites files to the images/sprites map to organize.
 function copySpriteGraphic() {
   return src(graphicSRC).pipe(dest(graphicURL));
 }
@@ -127,6 +144,18 @@ function endClean(done) {
   done();
 }
 
+// Using Modernizr to look for svg browser support. If no, set class in HTML file.
+function modernizr() {
+  return src(modernizrCssSRC, modernizrJsSRC)
+    .pipe(
+      modernizr({
+        "options": [
+          "setClasses"
+        ]
+      }))
+    .pipe(dest(modernizrURL));
+}
+
 // Watch files and reload browsersync after saving a change.
 function watch_files(done) {
   watch(htmlWatch, series(html, reload));
@@ -140,8 +169,9 @@ function watch_files(done) {
 // Series starts all tasks sequential. One after another.
 task("html", html);
 task("css", css);
-task("scripts", scripts);
+task("scripts", series(modernizr, scripts));
+task("modernizr", modernizr);
 
 task("default", parallel(css, html));
 task("watch", parallel(browser_sync, watch_files));
-task("icons", series(beginClean, createSprite, copySpriteGraphic, copySpriteCSS, endClean));
+task("icons", series(beginClean, createSprite, createPngCopy, copySpriteGraphic, copySpriteCSS, endClean));
