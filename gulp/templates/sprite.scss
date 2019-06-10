@@ -7,6 +7,11 @@
 .icon {
   background-image: url("/assets/images/sprites/{{{sprite}}}");
 }
+
+.no-svg .icon {
+  background-image: url("/assets/images/sprites/{{#replaceSvgWithPng}}{{{sprite}}}{{/replaceSvgWithPng}}");
+}
+
 {{/first}}
 
 .icon--{{base}} {
@@ -14,4 +19,5 @@
   height: {{height.outer}}px;
   background-position: {{position.relative.xy}};
 }
+
 {{/shapes}}

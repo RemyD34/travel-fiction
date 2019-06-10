@@ -1,58 +1,72 @@
 // Gulp 4
-const { src, dest, task, watch, parallel, series } = require("gulp");
+const { src, dest, task, watch, parallel, series } = require('gulp');
 
 // CSS related plugins
-var postcss = require("gulp-postcss"),
-  autoprefixer = require("autoprefixer"),
-  cssvars = require("postcss-simple-vars"),
-  nested = require("postcss-nested"),
-  cssImport = require("postcss-import"),
-  mixins = require("postcss-mixins"),
-  rename = require("gulp-rename"),
-  hexrgba = require("postcss-hexrgba"),
-  modernizr = require("gulp-modernizr"),
+var postcss = require('gulp-postcss'),
+  autoprefixer = require('autoprefixer'),
+  cssvars = require('postcss-simple-vars'),
+  nested = require('postcss-nested'),
+  cssImport = require('postcss-import'),
+  mixins = require('postcss-mixins'),
+  rename = require('gulp-rename'),
+  hexrgba = require('postcss-hexrgba'),
+  // modernizr = require("gulp-modernizr"),
   // Sprite related plugins.
-  del = require("del"),
-  svgSprite = require("gulp-svg-sprite"),
-  svg2png = require("gulp-svg2png");
+  del = require('del'),
+  svgSprite = require('gulp-svg-sprite'),
+  svg2png = require('gulp-svg2png');
 
 // JS related plugins using Webpack.
-var webpack = require("webpack");
-var configURL = "./webpack.config.js";
+var webpack = require('webpack');
+var configURL = './webpack.config.js';
 
 // Browser related plugins
-var browserSync = require("browser-sync").create();
+var browserSync = require('browser-sync').create();
 
 // project related variables
-var styleWatch = "./app/assets/styles/**/*.scss";
-var htmlWatch = "./app/index.html";
-var scriptWatch = "./app/assets/scripts/**/*.js";
+var styleWatch = './app/assets/styles/**/*.scss';
+var htmlWatch = './app/index.html';
+var scriptWatch = './app/assets/scripts/**/*.js';
 
-var cssSRC = "./app/assets/styles/styles.scss";
-var cssURL = "./app/temp/styles";
+var cssSRC = './app/assets/styles/styles.scss';
+var cssURL = './app/temp/styles';
 
 // Sprite related variables
-var iconSRC = "./app/assets/images/icons/**/*.svg";
-var iconURL = "./app/temp/sprite/";
-var pngSRC = "./app/temp/sprite/css/*.svg";
-var pngURL = "./app/temp/sprite/css";
-var graphicSRC = "./app/temp/sprite/css/**/*.{svg,png}";
-var graphicURL = "./app/assets/images/sprites";
-var copySRC = "./app/temp/sprite/css/*.css";
-var copyURL = "./app/assets/styles/modules";
+var iconSRC = './app/assets/images/icons/**/*.svg';
+var iconURL = './app/temp/sprite/';
+var pngSRC = './app/temp/sprite/css/*.svg';
+var pngURL = './app/temp/sprite/css';
+var graphicSRC = './app/temp/sprite/css/**/*.{svg,png}';
+var graphicURL = './app/assets/images/sprites';
+var copySRC = './app/temp/sprite/css/*.css';
+var copyURL = './app/assets/styles/modules';
 
 // Modernizr related variables
-var modernizrCssSRC = "./app/assets/styles/**/*.scss";
-var modernizrJsSRC = "./app/assets/scripts/**/*.js";
-var modernizrURL = "./app/temp/scripts/";
+// var modernizrCssSRC = "./app/assets/styles/**/*.scss";
+// var modernizrJsSRC = "./app/assets/scripts/**/*.js";
+// var modernizrURL = "./app/temp/scripts/";
 
 var config = {
+  shape: {
+    spacing: {
+      padding: 1
+    }
+  },
   mode: {
     css: {
-      sprite: "sprite.svg",
+      variables: {
+        replaceSvgWithPng: function() {
+          return function(sprite, render) {
+            return render(sprite)
+              .split('.svg')
+              .join('.png');
+          };
+        }
+      },
+      sprite: 'sprite.svg',
       render: {
         css: {
-          template: "./gulp/templates/sprite.scss"
+          template: './gulp/templates/sprite.scss'
         }
       }
     }
@@ -64,7 +78,7 @@ function browser_sync() {
   browserSync.init({
     notify: false,
     server: {
-      baseDir: "app"
+      baseDir: 'app'
     }
   });
 }
@@ -76,18 +90,18 @@ function reload(done) {
 
 // HTML task.
 function html(done) {
-  console.log("Imagine something useful being done to your HTML here.");
+  console.log('Imagine something useful being done to your HTML here.');
   done();
 }
 
 // CSS task.
 function css(done) {
   src(cssSRC)
-    .pipe(rename("styles.css"))
+    .pipe(rename('styles.css'))
     .pipe(postcss([cssImport(), mixins(), cssvars(), nested(), hexrgba(), autoprefixer()]))
-    .on("error", function (errorInfo) {
+    .on('error', function(errorInfo) {
       console.log(errorInfo.toString());
-      this.emit("end");
+      this.emit('end');
     })
     .pipe(dest(cssURL));
   done();
@@ -96,7 +110,7 @@ function css(done) {
 // JS task.
 // Automate bundling JS files into one file with Webpack 4.30.0
 function scripts(done) {
-  webpack(require(configURL), function (err, stats) {
+  webpack(require(configURL), function(err, stats) {
     if (err) {
       console.log(err.toString());
     }
@@ -104,6 +118,13 @@ function scripts(done) {
   });
   done();
 }
+
+// Using Modernizr to look in .scss and .js files then build a modernizr.js file.
+// function modernizr() {
+//   return src([modernizrCssSRC, modernizrJsSRC])
+//     .pipe(modernizr("modernizr-custom.js"))
+//     .pipe(dest(modernizrURL));
+// }
 
 // Begin compilling multiple icon files into one sprite file.
 // Delete outdated sprite files before creating new ones.
@@ -134,7 +155,7 @@ function copySpriteGraphic() {
 // Rename and copy the css sprite file to the modules map.
 function copySpriteCSS() {
   return src(copySRC)
-    .pipe(rename("_sprite.scss"))
+    .pipe(rename('_sprite.scss'))
     .pipe(dest(copyURL));
 }
 
@@ -142,18 +163,6 @@ function copySpriteCSS() {
 function endClean(done) {
   del([iconURL]);
   done();
-}
-
-// Using Modernizr to look for svg browser support. If no, set class in HTML file.
-function modernizr() {
-  return src(modernizrCssSRC, modernizrJsSRC)
-    .pipe(
-      modernizr({
-        "options": [
-          "setClasses"
-        ]
-      }))
-    .pipe(dest(modernizrURL));
 }
 
 // Watch files and reload browsersync after saving a change.
@@ -167,11 +176,10 @@ function watch_files(done) {
 // Call tasks
 // Parallel starts all tasks at the same time.
 // Series starts all tasks sequential. One after another.
-task("html", html);
-task("css", css);
-task("scripts", series(modernizr, scripts));
-task("modernizr", modernizr);
+task('html', html);
+task('css', css);
+task('scripts', scripts);
 
-task("default", parallel(css, html));
-task("watch", parallel(browser_sync, watch_files));
-task("icons", series(beginClean, createSprite, createPngCopy, copySpriteGraphic, copySpriteCSS, endClean));
+task('default', parallel(css, html));
+task('watch', parallel(browser_sync, watch_files));
+task('icons', series(beginClean, createSprite, createPngCopy, copySpriteGraphic, copySpriteCSS, endClean));

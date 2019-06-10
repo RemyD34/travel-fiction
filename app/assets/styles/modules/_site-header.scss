@@ -39,7 +39,7 @@
       transform: translateX(0);
 
       .site-header--dark & {
-        transform: scale(0.57);
+        transform: scale(0.56);
       }
     }
   }
@@ -61,7 +61,7 @@
     }
 
     &::before {
-      content: "";
+      content: '';
       position: absolute;
       top: 0px;
       left: 0;
@@ -84,7 +84,7 @@
     }
 
     &::after {
-      content: "";
+      content: '';
       position: absolute;
       bottom: 0;
       left: 0;
