@@ -18,6 +18,7 @@
     "browser-sync": "^2.26.7",
     "del": "^4.1.1",
     "gulp": "^4.0.2",
+    "gulp-hub": "^4.2.0",
     "gulp-modernizr": "^3.2.1",
     "gulp-postcss": "^8.0.0",
     "gulp-rename": "^1.4.0",
