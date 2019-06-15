@@ -1,4 +1,0 @@
-{
-  "minify": false,
-  "options": ["html5printshiv", "setClasses"]
-}

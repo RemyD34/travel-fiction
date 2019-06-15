@@ -73,5 +73,4 @@ function watch_files(done) {
 }
 
 task('watch', parallel(browser_sync, watch_files));
-task('scripts', scripts);
-task('css', css);
+task('prep', series(css, scripts));
