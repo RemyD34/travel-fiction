@@ -2,7 +2,7 @@
   "name": "travel-fiction",
   "version": "1.0.0",
   "dependencies": {
-    "axios": "^0.19.0",
+    "axios": "^0.21.1",
     "jquery": "^3.4.1",
     "jquery-smooth-scroll": "^2.2.0",
     "lazysizes": "^5.1.0",
